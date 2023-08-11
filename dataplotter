@@ -1,0 +1,83 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import os
+
+def citeste_date_din_csv(nume_fisier):
+    try:
+        data = pd.read_csv(nume_fisier)
+        return data
+    except FileNotFoundError:
+        print(f"Fisierul '{nume_fisier}' nu a fost gasit.")
+        return None
+    except Exception as e:
+        print("A aparut o eroare in citirea datelor din CSV.")
+        print(e)
+        return None
+
+def genereaza_grafic_distanta(data_frame):
+    if data_frame is not None:
+        plt.figure(figsize=(10, 6))
+        plt.plot(data_frame['Timp (s)'], data_frame['Distanță'], marker='o')
+        plt.xlabel('Timp (s)')
+        plt.ylabel('Distanță (cm)')
+        plt.title('Grafic cu distanța în funcție de timp')
+        plt.grid(True)
+        plt.show()
+
+def genereaza_grafic_lumina(data_frame):
+    if data_frame is not None:
+        plt.figure(figsize=(10, 6))
+        plt.plot(data_frame['Distanta'], data_frame['Lumină'], marker='o')
+        plt.xlabel('Distanță (cm)')
+        plt.ylabel('Valoare Lumina')
+        plt.title('Grafic cu lumina în funcție de distanță')
+        plt.grid(True)
+        plt.show()
+
+def genereaza_grafic_temperatura_umiditate(data_frame):
+    if data_frame is not None:
+        plt.figure(figsize=(10, 6))
+        plt.plot(data_frame['Timp (s)'], data_frame['Temperatură'], marker='o', label='Temperatură', color='blue')
+        plt.plot(data_frame['Timp (s)'], data_frame['Umiditate'], marker='o', label='Umiditate', color='green')
+        plt.xlabel('Timp (s)')
+        plt.ylabel('Valoare')
+        plt.title('Grafic cu temperatura și umiditatea în funcție de timp')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+
+def alege_grafic():
+    print("Alegeți tipul de grafic dorit:")
+    print("1. Distanță în funcție de timp")
+    print("2. Lumina în funcție de Distanță")
+    print("3. Temperatura și Umiditate în funcție de timp")
+
+    while True:
+        try:
+            optiune = int(input("Introduceți numărul opțiunii dorite: "))
+            if optiune == 1:
+                nume_fisier = 'distanta.csv'
+                return nume_fisier
+            elif optiune == 2:
+                nume_fisier = 'lumina.csv'
+                return nume_fisier
+            elif optiune == 3:
+                nume_fisier = 'temperatura_umiditate.csv'
+                return nume_fisier
+            else:
+                print("Opțiune invalidă. Vă rugăm să alegeți un număr valabil.")
+        except ValueError:
+            print("Opțiune invalidă. Vă rugăm să alegeți un număr valabil.")
+
+if __name__ == "__main__":
+    nume_fisier = alege_grafic()
+    date_frame = citeste_date_din_csv(nume_fisier)
+    if date_frame is not None:
+        if 'distanta' in nume_fisier:
+            genereaza_grafic_distanta(date_frame)
+        elif 'lumina' in nume_fisier:
+            genereaza_grafic_lumina(date_frame)
+        elif 'temperatura_umiditate' in nume_fisier:
+            genereaza_grafic_temperatura_umiditate(date_frame)
+        else:
+            print("Opțiune invalidă. Vă rugăm să alegeți un număr valabil.")
